@@ -1,12 +1,17 @@
 # Operating System imports
 import os
+
+cwd = os.getcwd()
+print(f"CWD: {cwd}")
 from dotenv import load_dotenv
 load_dotenv()
 
 
 import time
 
-from Model.sentiment_analysis import SentimentModel
+# Import models 
+from Models.sentiment_analysis import SentimentModel
+from Models.llm import LargeLanguageModel
 
 import pandas as pd
 
@@ -19,6 +24,7 @@ from Graphing.graphs import DataGraphs
 
 # Import Asset data
 from AssetData.asset_data import AssetData
+
 
 import pprint
 
@@ -126,7 +132,7 @@ if __name__ == "__main__":
     #articles = google.query_search(ticker, time_frame="1y")
 
     inp = 1
-    choice = 3
+    choice = 4
     # ---------------------------------- Google ----------------------------------
     if choice == 1:
         if inp == 1:
@@ -149,7 +155,7 @@ if __name__ == "__main__":
 
     elif choice == 4:
 
-        df1 = pd.DataFrame({   })
+        llm = LargeLanguageModel()
     #google.get_total_subject_sentiment(ticker)
     #update_googlenews_dataset(search_term=ticker,df=articles)
     #r.get_top_posts("Cryptocurrency", 5, include_comments=True)

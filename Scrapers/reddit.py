@@ -7,7 +7,7 @@ load_dotenv()
 import praw as pr
 
 # Import sentiment analysis model. 
-from Model.sentiment_analysis import SentimentModel
+from Models.sentiment_analysis import SentimentModel
 
 
 # Get the praw settings 

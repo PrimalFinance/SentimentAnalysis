@@ -16,7 +16,7 @@ from newspaper import Article
 from newspaper.article import ArticleException
 
 # Import sentitment model. 
-import Model.sentiment_analysis
+import Models.sentiment_analysis
 
 
 # Paths to folders. 
