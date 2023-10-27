@@ -2,7 +2,6 @@
 import os
 
 cwd = os.getcwd()
-print(f"CWD: {cwd}")
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -18,12 +17,17 @@ import pandas as pd
 # Import scrapers 
 from Scrapers.reddit import RedditScraper
 from Scrapers.googlenews import GoogleNewsScraper
+from Scrapers.fmp_scraper import FmpScraper
+from Scrapers.earnings_report_scraper import EarningsReportsScraper
+
 
 # Import Graph
 from Graphing.graphs import DataGraphs
 
 # Import Asset data
 from AssetData.asset_data import AssetData
+
+
 
 
 import pprint
@@ -125,14 +129,14 @@ google_menu = """
 if __name__ == "__main__":
 
     start = time.time()
-    ticker = "META"
+    ticker = "AAPL"
     #r = RedditScraper()
     #google = GoogleNewsScraper()
     #ticker = "META"
     #articles = google.query_search(ticker, time_frame="1y")
 
-    inp = 1
-    choice = 4
+    inp = 3
+    choice = 5
     # ---------------------------------- Google ----------------------------------
     if choice == 1:
         if inp == 1:
@@ -154,8 +158,23 @@ if __name__ == "__main__":
             plot_sentiment(ticker)
 
     elif choice == 4:
+        
+        print(f"TAG")
 
         llm = LargeLanguageModel()
+        llm.query_chat()
+        
+    elif choice == 5:
+         
+        fmp = FmpScraper(ticker=ticker)
+        fmp.set_income_statement(years=22)
+    
+    elif choice == 6:
+        
+        er = EarningsReportsScraper()
+        
+        er.analyze_report()
+        
     #google.get_total_subject_sentiment(ticker)
     #update_googlenews_dataset(search_term=ticker,df=articles)
     #r.get_top_posts("Cryptocurrency", 5, include_comments=True)

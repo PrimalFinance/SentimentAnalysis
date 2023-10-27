@@ -26,7 +26,7 @@ google_news_folder = "D:\Datasets\ArticleHeadlines\GoogleNews"
 class GoogleNewsScraper:
     def __init__(self, language: str = "en", country: str = "US"):
         self.gn = GoogleNews(lang=language, country=country)
-        self.sentiment_model = Model.sentiment_analysis.SentimentModel()
+        self.sentiment_model = Models.sentiment_analysis.SentimentModel()
     '''-----------------------------------'''
     def query_topic_headlines(self, topic: str = "business"):
         """
