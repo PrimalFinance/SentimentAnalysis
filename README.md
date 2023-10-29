@@ -4,28 +4,42 @@
 
 ---
 
-[Folder] Storage: Holds csv files with open, high, low, close, volume data.
-[Python File] asset_data.py: File used to interface with data.
+#### [Folders]
+
+- Storage: Holds csv files with open, high, low, close, volume data.
+
+#### [Python Files]
+
+- asset_data.py: File used to interface with data.
 
 ## Database
 
 ---
 
-[Folder] AnnualData: Holds .db files of companies with their balance sheet, income statement, and cash flow statement.
-[Python] data_base_manager.py: Interfaces with the .db files. Can add, update, and delete data from databases.
+#### [Folders]
+
+- AnnualData: Holds .db files of companies with their balance sheet, income statement, and cash flow statement.
+
+#### [Python Files]
+
+- data_base_manager.py: Interfaces with the .db files. Can add, update, and delete data from databases.
 
 ## Graphing
 
 ---
 
-[Python] graphs.py: Supports graphing of multiple data points.
+#### [Python Files]
+
+- graphs.py: Supports graphing of multiple data points.
 
 ## Models
 
 ---
 
-[Python] llm.py: Interface with ChatGPT to query chats.
-[Python] sentiment_analysis.py: Interface with a local NLP model to get analysis scores on text.
+#### [Python Files]
+
+- llm.py: Interface with ChatGPT to query chats.
+- sentiment_analysis.py: Interface with a local NLP model to get analysis scores on text.
 
 ## Responses
 
