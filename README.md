@@ -37,6 +37,8 @@ Description: Holds responses from ChatGPT for further analysis.
 
 ---
 
+#### [Python Files]
+
 - earnings_report_scraper.py: Get an earnings report through a pdf.
 - fiscal_dates_scraper.py: Get the fiscal dates of a company.
 - fmp_scraper.py: Using "financialmodelingprep.com" query financial statements.
