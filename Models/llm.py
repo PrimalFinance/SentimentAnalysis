@@ -19,31 +19,43 @@ openai.api_key = os.getenv("openai_key")
 cwd = os.getcwd()
 responses_folder = f"{cwd}\\Responses"
 
-print(f"responses: {responses_folder}")
+predefined_chats = {
+    "earningsReport": "You are looking at earnings reports and trying to determine the positives and negatives that you \
+    see. Highlight any risks with the company, management, or any other noteworthy pieces of information. You will be given \
+    various pieces of information in chunks. Summarize the text to the best of your ability. Also list 10 bullet points of positives \
+    and negatives."
+}
 
+system_roles = {
+    "earningsReportLarge": "I will give text of a earnings report from a company. It will be given in pieces, so try to keep all \
+of the information in mind for the following directions. I want you to analyze the company's financial situation. The actions of their management, \
+and at the end I want you to list 10 bullet points for positive things you found, and 10 bullet points for negative things."
+}
+
+
+llm_info = {
+    "gpt-3.5-turbo": {
+        "maxTokens": 4097,
+        "inputPrice": 0.0015, # $ per 1k tokens. 
+        "outputPrice": 0.002
+    }
+}
 
 class LargeLanguageModel:
     def __init__(self):
         self.sentiment_model = Models.sentiment_analysis.SentimentModel()
         self.llm_model = "gpt-3.5-turbo"
         
-        # Because 3.5 has a max token per query of 4097 tokens. 
-        if self.llm_model == "gpt-3.5-turbo":
-            self.max_section_size = 4097
-        pass
+        # Set the max tokens that the model can handle. 
+        self.max_tokens = llm_info[self.llm_model]["maxTokens"]
 
     '''-----------------------------------'''
     def query_chat(self, query: str, file_name: str):
         """
-        :param query: The question to ask to the large language model. """
+        :param query: The question to ask to the large language model. 
+        """
         print("===== Query Check =====")
         
-        predefined_chats = {
-            "earningsReport": "You are looking at earnings reports and trying to determine the positives and negatives that you \
-            see. Highlight any risks with the company, management, or any other noteworthy pieces of information. You will be given \
-            various pieces of information in chunks. Summarize the text to the best of your ability. Also list 10 bullet points of positives \
-            and negatives."
-        }
         
         
         # Query GPT 
@@ -75,6 +87,44 @@ class LargeLanguageModel:
         return df
         
     '''-----------------------------------'''
+    def query_chat_LARGE(self, query: str, file_name: str):
+        """
+        :param query: The question to ask to the large language model. 
+        """
+        
+        # Split the large text into smaller chuncks. 
+        chunks = [query[i:i + self.max_tokens] for i in range(0, len(query), self.max_tokens)]
+        
+        # Conversation logic. 
+        chunk_index = 0
+        output = []
+        for chunk in chunks:
+            conversation = []
+            # Create a system message with the predefined role. 
+            system_message = {
+                "role": "system",
+                "content": system_roles["earningsReportLarge"]
+            }
+            # Append the system message the sets up the role of the model. 
+            conversation.append(system_message)
+            
+            # Create a user message with the "chunk" of the text to send to the model. 
+            user_message = {
+                "role": "user",
+                "content": chunk
+            }
+            # Add the user message. 
+            conversation.append(user_message)
+            
+            # Request a completion from the model. 
+            response = openai.ChatCompletion.create(model=self.llm_model, messages=conversation)
+            # Extract the response
+            output_text = response["choices"][0]["message"]["content"]
+            
+            output.append(output_text)    
+            
+        
+        print(f"Output: {output}")
     '''-----------------------------------'''
     def split_text(self, text: str) -> list:
         """
@@ -82,8 +132,8 @@ class LargeLanguageModel:
         :returns: A list containing separate sections of the text. Each sections size is determined by "max_section_size". 
         """ 
         text_sections = []
-        for i in range(0, len(text), self.max_section_size):
-                            section = text[i:i+self.max_section_size]
+        for i in range(0, len(text), self.max_tokens):
+                            section = text[i:i+self.max_tokens]
                             text_sections.append(section)
         
         return text_sections

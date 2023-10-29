@@ -136,7 +136,7 @@ if __name__ == "__main__":
     #articles = google.query_search(ticker, time_frame="1y")
 
     inp = 3
-    choice = 5
+    choice = 6
     # ---------------------------------- Google ----------------------------------
     if choice == 1:
         if inp == 1:
@@ -170,10 +170,16 @@ if __name__ == "__main__":
         fmp.set_cash_flow(years=22)
         #fmp.set_balance_sheet(years=20)
     elif choice == 6:
-        
+        ticker = "INTC"
         er = EarningsReportsScraper()
+        llm = LargeLanguageModel()
+        sm = SentimentModel()
         
-        er.analyze_report()
+        report_url = er.get_recent_report(ticker)
+        report_text = er.get_report_text(url=report_url)
+        
+        scores = sm.analyze_text(text=report_text)
+        print(f"Scores: {scores}")
         
     #google.get_total_subject_sentiment(ticker)
     #update_googlenews_dataset(search_term=ticker,df=articles)
