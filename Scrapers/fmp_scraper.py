@@ -19,6 +19,8 @@ import Scrapers.fiscal_dates_scraper
 # Yahoo imports 
 import yfinance as yf
 
+import datetime as dt
+
 # Import database
 import Database.data_base_manager
 
@@ -68,12 +70,32 @@ class FmpScraper:
         if not self.db.is_connected():
             self.db.connect_to_database(ticker=self.ticker)
         
+        # Boolean to track if updates are needed. 
+        update_needed = False
+        update_database = False
+        
         
         df = self.db.read_from_database(table_name="income_statement")
         
+        print(f"DF Read: {df}")
+
         # Logic to determine if an update is needed. 
         if df.empty:
+            print(f"Empty Tag")
             update_needed = True
+            # If the dataframe is empty we do not need to update, we need to write/create new tables. 
+            update_database = False
+        else:
+            print(f"Non-Empty Tag")
+            # If the dataframe *is* empty, check if it is outdated.  
+            outdated = self.is_outdated(df, considered_outdated=13)
+            print(f"OUTDATED: {outdated}")
+            # If the dataframe *is not* empty, but it is outdated we want to update the database.  
+            if outdated:
+                update_needed = True
+                update_database = True
+            else:   
+                print(f"[Set Income Statement] Data retrieved from database.")
         
         if update_needed:
             endpoint = "income-statement"
@@ -98,12 +120,164 @@ class FmpScraper:
             # Add stock prices to the dataframe. 
             if include_stock_prices:
                 df = self.add_stock_prices(df)
-                
-            self.db.write_to_database(df=df, table_name="income_statement")
+            
+            # Determine if the database should be updated, or written to, possibly overwriting contents. 
+            if update_database:
+                print(f"[Set Income Statement] - Updating outdated database: {self.db.get_file_connection()}, table: income_statement")
+                self.db.update_database(update_df=df, table_name="income_statement")
+            else:
+                print(f"[Set Income Statement] - Writing to database: {self.db.get_file_connection()}, table: income_statement")
+                self.db.write_to_database(df=df, table_name="income_statement")
+            
+            print(f"[Set Income Statement] Data retrieved from FMP Scraper.")
+            
+        self.income_statement = df
             
         
     '''-----------------------------------'''
+    def set_balance_sheet(self, years: int, include_stock_prices: bool = True):
+        """
+        :param years: The number of fiscal years to collect. 
+        :include_stock_prices: A boolean that determines if stock prices are included in the final dataframe.  
+        
+        :returns: Returns a dataframe with data from the income statement, for the specified number of 'years'. 
+        """
+        
+        balance_sheet_table = "balance_sheet"
+        set_statement = "Set Balance Sheet"
+        
+        # If there is not connection to a database file. 
+        if not self.db.is_connected():
+            self.db.connect_to_database(ticker=self.ticker)
+        
+        # Boolean to track if updates are needed. 
+        update_needed = False
+        update_database = False
+        
+        
+        df = self.db.read_from_database(table_name=balance_sheet_table)
+
+        # Logic to determine if an update is needed. 
+        if df.empty:
+            update_needed = True
+            # If the dataframe is empty we do not need to update, we need to write/create new tables. 
+            update_database = False
+        else:
+            # If the dataframe *is* empty, check if it is outdated.  
+            outdated = self.is_outdated(df, considered_outdated=13)
+            # If the dataframe *is not* empty, but it is outdated we want to update the database.  
+            if outdated:
+                update_needed = True
+                update_database = True
+            else:   
+                print(f"[{set_statement}] Data retrieved from database.")
+        
+        if update_needed:
+            endpoint = "balance-sheet-statement"
+            
+            # Query the income statement for the company. 
+            balance_sheet = requests.get(self.root_url.format(endpoint, self.ticker, years, fmp_key))
+            balance_sheet = balance_sheet.json()
+            df = pd.DataFrame(balance_sheet)
+            # Transpose the dataframe to swap the rows with the columns. 
+            df = df.T
+            # Reverse the columns so the newest data is on the right side. 
+            df = df[df.columns[::-1]]
+            
+            # Remove unwanted rows. 
+            rows_to_remove = ["symbol","reportedCurrency", "acceptedDate",]
+            df = df.drop(labels=rows_to_remove, axis=0)
+            
+            # Set the column titles as the date row, and drop the remaining date row. 
+            df.columns = df.loc["date"]
+            df = df.drop("date")
+            # Add stock prices to the dataframe. 
+            if include_stock_prices:
+                df = self.add_stock_prices(df)
+            
+            # Determine if the database should be updated, or written to, possibly overwriting contents. 
+            if update_database:
+                print(f"[{set_statement}] - Updating outdated database: {self.db.get_file_connection()}, table: balance_sheet")
+                self.db.update_database(update_df=df, table_name=balance_sheet_table)
+            else:
+                print(f"[{set_statement}] - Writing to database: {self.db.get_file_connection()}, table: balance_sheet")
+                self.db.write_to_database(df=df, table_name=balance_sheet_table)
+            
+            print(f"[{set_statement}] Data retrieved from FMP Scraper.")
+        print(f"Update needed: {update_needed}   Update Database: {update_database}")    
+        self.balance_sheet = df
     '''-----------------------------------'''
+    def set_cash_flow(self, years: int, include_stock_prices: bool = True):
+        """
+        :param years: The number of fiscal years to collect. 
+        :include_stock_prices: A boolean that determines if stock prices are included in the final dataframe.  
+        
+        :returns: Returns a dataframe with data from the income statement, for the specified number of 'years'. 
+        """
+        
+        cash_flow_table = "cash_flow"
+        set_statement = "Set Cash Flow"
+        
+        # If there is not connection to a database file. 
+        if not self.db.is_connected():
+            self.db.connect_to_database(ticker=self.ticker)
+        
+        # Boolean to track if updates are needed. 
+        update_needed = False
+        update_database = False
+        
+        
+        df = self.db.read_from_database(table_name=cash_flow_table)
+
+        # Logic to determine if an update is needed. 
+        if df.empty:
+            update_needed = True
+            # If the dataframe is empty we do not need to update, we need to write/create new tables. 
+            update_database = False
+        else:
+            # If the dataframe *is* empty, check if it is outdated.  
+            outdated = self.is_outdated(df, considered_outdated=13)
+            # If the dataframe *is not* empty, but it is outdated we want to update the database.  
+            if outdated:
+                update_needed = True
+                update_database = True
+            else:   
+                print(f"[{set_statement}] Data retrieved from database.")
+        
+        if update_needed:
+            endpoint = "cash-flow-statement"
+            
+            # Query the income statement for the company. 
+            cash_flow = requests.get(self.root_url.format(endpoint, self.ticker, years, fmp_key))
+            cash_flow = cash_flow.json()
+            df = pd.DataFrame(cash_flow)
+            # Transpose the dataframe to swap the rows with the columns. 
+            df = df.T
+            # Reverse the columns so the newest data is on the right side. 
+            df = df[df.columns[::-1]]
+            
+            # Remove unwanted rows. 
+            rows_to_remove = ["symbol","reportedCurrency", "acceptedDate",]
+            df = df.drop(labels=rows_to_remove, axis=0)
+            
+            # Set the column titles as the date row, and drop the remaining date row. 
+            df.columns = df.loc["date"]
+            df = df.drop("date")
+            # Add stock prices to the dataframe. 
+            if include_stock_prices:
+                df = self.add_stock_prices(df)
+            
+            # Determine if the database should be updated, or written to, possibly overwriting contents. 
+            if update_database:
+                print(f"[{set_statement}] - Updating outdated database: {self.db.get_file_connection()}, table: {cash_flow_table}")
+                self.db.update_database(update_df=df, table_name=cash_flow_table)
+            else:
+                print(f"[{set_statement}] - Writing to database: {self.db.get_file_connection()}, table: {cash_flow_table}")
+                self.db.write_to_database(df=df, table_name=cash_flow_table)
+            
+            print(f"[{set_statement}] Data retrieved from FMP Scraper.")
+        print(f"Update needed: {update_needed}   Update Database: {update_database}")    
+        self.cash_flow  = df
     
     # ---------------------------------- Financial Statements - Setters & Getters ----------------------------------
     '''-----------------------------------'''
@@ -184,6 +358,35 @@ class FmpScraper:
         
         
     '''-----------------------------------'''
+    def is_outdated(self, df: pd.DataFrame, considered_outdated: int = 12, warning_message: bool = True):
+        """
+        :param df: Dataframe with columns of financial data. 
+        :param warning_message: Determine if warning readouts should be displayed. 
+        
+        Description: Check the dates in the columns of the dataframe. 
+        """
+        # Get the different dates from the dataframe. 
+        earnings_dates = df.columns
+        filing_dates = list(df.loc["fillingDate"])
+        # Get the current date. 
+        current_date = dt.datetime.now()
+        # Create datetime object for filing date. 
+        recent_filing_obj = dt.datetime.strptime(filing_dates[-1], "%Y-%m-%d")
+        
+        # Calculate the difference between dates. 
+        delta_years = current_date.year - recent_filing_obj.year
+        delta_months = current_date.month - recent_filing_obj.month
+        total_months = delta_years * 12 + delta_months
+        
+        if total_months >= considered_outdated:
+           return True
+        else: 
+           return False
+        
+       
+        
+        
+        
     '''-----------------------------------'''
     '''-----------------------------------'''
     '''-----------------------------------'''

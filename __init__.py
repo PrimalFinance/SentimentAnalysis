@@ -167,8 +167,8 @@ if __name__ == "__main__":
     elif choice == 5:
          
         fmp = FmpScraper(ticker=ticker)
-        fmp.set_income_statement(years=22)
-    
+        fmp.set_cash_flow(years=22)
+        #fmp.set_balance_sheet(years=20)
     elif choice == 6:
         
         er = EarningsReportsScraper()

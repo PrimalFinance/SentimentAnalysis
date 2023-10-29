@@ -46,23 +46,16 @@ class LargeLanguageModel:
         }
         
         
-        # Split the query so the model can handle it. 
-        query = self.split_text(query)
-        
-        messages=[
-                {"role": "system", "content": predefined_chats["earningsReport"]},
-                ]
-        
-        
-        for chunk in query:
-            messages.append({"role": "user", "content": chunk})
-        
         # Query GPT 
         completion = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=messages
+            messages=[
+                {"role": "system", "content": predefined_chats["earningsReport"]},
+                {"role": "user", "content": query}
+                ]
         )
         
+        sentiment_scores = []
         for i in completion.choices:
             sent_score = self.sentiment_model.analyze_text(i.message.content)
             message_content = f'"{i.message.content}"'
@@ -72,10 +65,10 @@ class LargeLanguageModel:
                 "neuScore": sent_score["neu"],
                 "negScore": sent_score["neg"]
             }    
-            messages.append(message)
+            sentiment_scores.append(message)
 
         csv_file_path = f"{responses_folder}\\{file_name}.csv"
-        df = pd.DataFrame(messages)
+        df = pd.DataFrame(sentiment_scores)
         
         df.to_csv(csv_file_path, index=False)
         
@@ -112,3 +105,5 @@ class LargeLanguageModel:
         """
          
     '''-----------------------------------'''
+    
+    

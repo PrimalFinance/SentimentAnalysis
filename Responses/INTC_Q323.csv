@@ -1,0 +1,35 @@
+
+"""Intel has made organizational changes to integrate its Accelerated Computing Systems and Graphics Group
+   into its Client Computing Group and Data Center and AI Group. This is expected to drive a more effective
+   go-to-market capability and reduce costs. The company has modified its segment reporting to align with 
+   these changes. In terms of business unit revenue and trends in Q3 2023, the Client Computing Group saw a 3% decrease,
+   the Data Center and AI group decreased by 10%, the Network and Edge group decreased by 32%, and Mobileye increased by 18%
+   while, Intel Foundry Services saw an increase of 299%.
+
+Positive bullet points:
+1. Intel is on track to achieve its goal of five nodes in four years and to regain transistor performance and power performance leadership by 2025.
+2. Intel 7, the company's first node using extreme ultraviolet (EUV) technology, is now in high-volume manufacturing.
+3. Intel achieved a critical milestone on Intel 18A with the release of the 0.9 PDK.
+4. Intel announced the industry's first glass substrates for next-generation advanced packaging, which will enable the scaling of transistors in a package and advance Moore's Law.
+5. Intel is investing in manufacturing capacity to create a geographically balanced and secure supply chain, including the opening of Fab 34 in Ireland and planned facilities in Germany and Poland.
+6. Intel is expanding and modernizing the Gordon Moore Park in Oregon.
+7. Intel has submitted major manufacturing proposals to the U.S. Department of Commerce, representing over $100 billion of investments.
+8. Intel has secured a major customer commitment for its advanced chip factories in Arizona.
+9. Intel is collaborating with Tower Semiconductor to provide foundry services and manufacturing capacity.
+10. Intel is focused on bringing AI capabilities across its hardware products and making it accessible through open multi-architecture software solutions.
+
+Negative bullet points:
+1. The Client Computing Group, Data Center and AI group, and Network and Edge group all experienced revenue decreases.
+2. The Network and Edge group saw a significant decrease of 32%.
+3. Client Computing Group revenue decreased by 3%.
+4. Data Center and AI group revenue decreased by 10%.
+5. Mobileye's revenue increase of 18% may not be enough to offset the revenue decreases in other business units.
+6. The overall performance and trends suggest challenges in certain segments.
+7. The future success of Intel's manufacturing proposals and investments is uncertain.
+8. The company may face increased competition in the AI and semiconductor market.
+9. The impact of the organizational changes on the company's performance and efficiency is yet to be fully demonstrated.
+10. The company may need to focus on strategies to improve revenue and regain market share in certain segments.""",
+
+
+content,posScore,neuScore,negScore
+-, 0.44782107323408127,0.4231424381335576,0.129036481725052

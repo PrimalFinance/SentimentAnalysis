@@ -37,7 +37,6 @@ class EarningsReportsScraper:
         # Now you can work with the extracted text from the PDF
         print(pdf_text)
         query_text = self.llm.split_text(text=pdf_text)
-        
         self.llm.query_chat(query=pdf_text, file_name="INTC_Q323_Report_Responses.csv")
         
         
