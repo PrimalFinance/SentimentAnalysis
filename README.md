@@ -37,10 +37,10 @@ Description: Holds responses from ChatGPT for further analysis.
 
 ---
 
-[Python] earnings_report_scraper.py: Get an earnings report through a pdf.
-[Python] fiscal_dates_scraper.py: Get the fiscal dates of a company.
-[Python] fmp_scraper.py: Using "financialmodelingprep.com" query financial statements.
-[Python] googlenews.py: Query google news for articles around specific topics, or get the latest trending stories.
-[Python] price_ranges.py: Get the price high, low, and average price of a stock within a specified period of time.
-[Python] reddit.py: Get posts from specified subreddits, or search reddit for specific terms.
-[Python] twitter.py: Get posts from certain accounts, or posts around certain topics.
+- earnings_report_scraper.py: Get an earnings report through a pdf.
+- fiscal_dates_scraper.py: Get the fiscal dates of a company.
+- fmp_scraper.py: Using "financialmodelingprep.com" query financial statements.
+- googlenews.py: Query google news for articles around specific topics, or get the latest trending stories.
+- price_ranges.py: Get the price high, low, and average price of a stock within a specified period of time.
+- reddit.py: Get posts from specified subreddits, or search reddit for specific terms.
+- twitter.py: Get posts from certain accounts, or posts around certain topics.
